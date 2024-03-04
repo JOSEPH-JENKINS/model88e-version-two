@@ -4,7 +4,7 @@
     <div class="product---page---img">
       <!-- <img :src="data.productByHandle.images.edges[0].node.src" /> -->
 
-      <NuxtImg
+      <img
         v-for="image in product.productByHandle.images.edges"
         :key="image.node.src"
         :src="image.node.src"

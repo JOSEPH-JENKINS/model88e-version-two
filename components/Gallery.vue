@@ -1,10 +1,10 @@
 <template>
   <div class="gallery">
     <div class="first---image image---box">
-      <NuxtImg src="" alt="Loading..." />
+      <img src="" alt="Loading..." />
     </div>
     <div class="second---image image---box">
-      <NuxtImg src="" alt="Loading..." />
+      <img src="" alt="Loading..." />
     </div>
   </div>
 </template>

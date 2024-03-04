@@ -2,7 +2,7 @@
   <NuxtLink :to="`/shop/${handle}`" class="product---card">
     <div>
       <div class="product---image">
-        <NuxtImg loading="lazy" :src="image" alt="Image" />
+        <img loading="lazy" :src="image" alt="Image" />
       </div>
       <div class="product---head">
         <h1 class="product---head---text">{{ title }}</h1>

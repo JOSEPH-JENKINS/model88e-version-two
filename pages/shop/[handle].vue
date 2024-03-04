@@ -15,7 +15,7 @@
       <div class="main---actions">
         <div class="desc---button">
           <button class="nav---button desc" @click="descFunction">
-            <h3 class="nav---text desc">About</h3>
+            <h3 class="nav---text desc">Desc</h3>
           </button>
         </div>
         <div class="price---tag">

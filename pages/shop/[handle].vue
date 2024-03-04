@@ -165,7 +165,7 @@ const addToCart = async (e) => {
     });
 
     cart.storeCart(data.checkoutLineItemsAdd.checkout);
-    console.log(data.checkoutLineItemsAdd.checkout);
+    alert("Product added to cart");
   } catch (error) {
     console.error("Error:", error);
   }

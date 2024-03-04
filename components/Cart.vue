@@ -17,7 +17,7 @@
               </p>
             </div>
             <p class="cart--under--text other---text">
-              Size: {{ item.node.variant.title }}
+              Sizes: {{ item.node.variant.title }}
             </p>
             <!-- <div class="delete">
               <button class="cart--under--text delete---btn">(Delete)</button>

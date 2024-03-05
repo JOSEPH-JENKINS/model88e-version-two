@@ -90,6 +90,7 @@ let quantity = 1;
 
 const updateQuantity = (e) => {
   quantity = e.target.value;
+  quantity = parseInt(quantity);
 };
 
 const price = computed(
@@ -165,7 +166,7 @@ const addToCart = async (e) => {
     });
 
     cart.storeCart(data.checkoutLineItemsAdd.checkout);
-    alert("Product added to cart");
+    // alert("Product added to cart");
   } catch (error) {
     console.error("Error:", error);
   }

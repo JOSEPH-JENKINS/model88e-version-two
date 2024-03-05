@@ -1,5 +1,5 @@
 <template>
-  <div class="nav---container">
+  <div class="nav---container" id="nav">
     <div class="nav">
       <Button placeholder="Shop" linked="/shop" />
       <Button
@@ -27,11 +27,13 @@ const aboutFunction = (e) => {
   e.preventDefault();
   useAboutSection().value = !useAboutSection().value;
   useModal().value = !useModal().value;
+  useCartMode().value = false;
 };
 
 const contactFunction = (e) => {
   e.preventDefault();
   useContactSection().value = !useContactSection().value;
+  useAboutSection().value = false;
 };
 
 const cartFunc = (e) => {

@@ -5,6 +5,7 @@
         ? 'nav---container contact open'
         : 'nav---container contact'
     "
+    id="contact"
   >
     <div class="nav contact">
       <Button placeholder="Instagram" linked="https://instagram.com/model88e" />

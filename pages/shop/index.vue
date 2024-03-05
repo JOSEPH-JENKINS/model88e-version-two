@@ -34,6 +34,4 @@ if (store.value.length >= 1) {
   inventory.addProductsToStore(data);
   ui_products = data;
 }
-
-console.log(store.value);
 </script>

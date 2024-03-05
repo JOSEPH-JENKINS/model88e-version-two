@@ -87,7 +87,6 @@ a {
   bottom: 5px;
   left: 50%;
   transform: translate(-50%, -5px);
-
   z-index: 9999;
 }
 
@@ -96,6 +95,7 @@ a {
   bottom: 65px;
   opacity: 0;
   transform: translate(-50%, 300px);
+  pointer-events: none;
 }
 
 .nav---container.contact.open,
@@ -103,6 +103,7 @@ a {
   bottom: 65px;
   opacity: 1;
   transform: translate(-50%, 0px);
+  pointer-events: all;
 }
 
 .nav---button,
@@ -187,7 +188,7 @@ a {
 
 .desc---modal {
   display: none;
-  width: 280px;
+  width: 100%;
   border-radius: 20px;
   padding: 20px;
   background: #8a8a8a;
@@ -312,7 +313,8 @@ a {
 }
 
 .product---actions {
-  display: flex;
+  display: inline-flex;
+  align-items: center;
   flex-direction: column;
   gap: 10px;
   position: fixed;
@@ -337,6 +339,10 @@ a {
 
 .nav---text.desc {
   color: #000;
+}
+
+.nav---text.button {
+  user-select: none;
 }
 
 .nav---button.price {

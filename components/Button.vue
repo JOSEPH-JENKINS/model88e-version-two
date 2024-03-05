@@ -12,7 +12,7 @@
           : 'nav---button'
       "
     >
-      <h3 class="nav---text">{{ placeholder }}</h3>
+      <h3 class="nav---text button">{{ placeholder }}</h3>
     </div>
   </NuxtLink>
 </template>

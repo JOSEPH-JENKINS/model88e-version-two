@@ -1,8 +1,10 @@
 <template>
   <div
+    @click.self="closeContent"
     :class="
       useCartMode().value ? 'nav---container cart open' : 'nav---container cart'
     "
+    id="cart"
   >
     <div class="nav cart">
       <div v-if="store.lineItems.edges.length >= 1">
@@ -44,5 +46,8 @@ import { storeToRefs } from "pinia";
 const cart = useCart();
 
 const { store } = storeToRefs(cart);
-console.log(store);
+
+const closeContent = () => {
+  useCartMode().value = false;
+};
 </script>

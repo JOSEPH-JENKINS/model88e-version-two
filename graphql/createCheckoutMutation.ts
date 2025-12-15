@@ -1,5 +1,3 @@
-import { gql } from 'graphql-tag';
-
 export const createCartMutation = gql`
   mutation createCart($lines: [CartLineInput!]) {
     cartCreate(input: { lines: $lines }) {

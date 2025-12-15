@@ -1,9 +1,29 @@
+import { gql } from 'graphql-tag';
+
 export const createCartMutation = gql`
-  mutation CreateCart {
-    cartCreate(input: {}) {
+  mutation createCart($lines: [CartLineInput!]) {
+    cartCreate(input: { lines: $lines }) {
       cart {
         id
         checkoutUrl
+        lines(first: 100) {
+          edges {
+            node {
+              id
+              quantity
+              merchandise {
+                ... on ProductVariant {
+                  id
+                  title
+                  product {
+                    title
+                    handle
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     }
   }

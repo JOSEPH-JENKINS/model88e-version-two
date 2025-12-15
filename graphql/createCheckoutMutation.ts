@@ -1,9 +1,9 @@
-export const createCheckoutMutation = gql`
-  mutation Checkout {
-    checkoutCreate(input: {}) {
-      checkout {
+export const createCartMutation = gql`
+  mutation CreateCart {
+    cartCreate(input: {}) {
+      cart {
         id
-        webUrl
+        checkoutUrl
       }
     }
   }

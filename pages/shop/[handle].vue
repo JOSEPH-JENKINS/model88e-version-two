@@ -1,9 +1,6 @@
-<!-- eslint-disable vue/html-self-closing -->
 <template>
   <section>
     <div class="product---page---img">
-      <!-- <img :src="data.productByHandle.images.edges[0].node.src" /> -->
-
       <img
         v-for="image in product.productByHandle.images.edges"
         :key="image.node.src"
@@ -67,9 +64,11 @@
 </template>
 
 <script setup>
-import { createCheckoutMutation } from "../../graphql/createCheckoutMutation";
+// FIX 1: Import 'createCartMutation' (new name) from the old file path
+import { createCartMutation } from "../../graphql/createCheckoutMutation";
 import { getProductQuery } from "../../graphql/getProduct";
-import { addLineItems } from "../../graphql/addLinesToCheckout";
+// Note: We kept the export name 'addLineItems' in the previous step, so this import remains correct
+import { addLineItems } from "../../graphql/addLinesToCheckout"; 
 
 const route = useRoute();
 const cart = useCart();
@@ -117,9 +116,10 @@ const redirectToPayment = async (e) => {
 
     if (cart.id === "") {
       const { data } = await apolloClient.client.mutate({
-        mutation: createCheckoutMutation,
+        mutation: createCartMutation, // FIX 2: Use the new mutation variable
       });
-      cart.storeId(data.checkoutCreate.checkout.id);
+      // FIX 3: Read from 'cartCreate' instead of 'checkoutCreate'
+      cart.storeId(data.cartCreate.cart.id);
     }
 
     let variantId =
@@ -129,15 +129,17 @@ const redirectToPayment = async (e) => {
     const { data } = await apolloClient.client.mutate({
       mutation: addLineItems,
       variables: {
-        lineItems: [{ variantId, quantity }],
-        checkoutId: cart.id,
+        // FIX 4: Use 'lines' and 'merchandiseId' (Cart API format)
+        lines: [{ merchandiseId: variantId, quantity }], 
+        cartId: cart.id, // FIX 5: Use 'cartId'
       },
     });
 
-    cart.storeCart(data.checkoutLineItemsAdd.checkout);
+    // FIX 6: Read from 'cartLinesAdd'
+    cart.storeCart(data.cartLinesAdd.cart);
 
-    window.location.href = data.checkoutLineItemsAdd.checkout.webUrl;
-    // console.log(data.checkoutLineItemsAdd.checkout.webUrl);
+    // FIX 7: Use 'checkoutUrl'
+    window.location.href = data.cartLinesAdd.cart.checkoutUrl;
   } catch (error) {
     console.error("Error:", error);
   }
@@ -148,9 +150,10 @@ const addToCart = async (e) => {
     const apolloClient = useApolloClient();
     if (cart.id === "") {
       const { data } = await apolloClient.client.mutate({
-        mutation: createCheckoutMutation,
+        mutation: createCartMutation, // FIX 8: Use the new mutation variable
       });
-      cart.storeId(data.checkoutCreate.checkout.id);
+      // FIX 9: Read from 'cartCreate'
+      cart.storeId(data.cartCreate.cart.id);
     }
 
     let variantId =
@@ -160,12 +163,14 @@ const addToCart = async (e) => {
     const { data } = await apolloClient.client.mutate({
       mutation: addLineItems,
       variables: {
-        lineItems: [{ variantId, quantity }],
-        checkoutId: cart.id,
+        // FIX 10: Use 'lines' and 'merchandiseId'
+        lines: [{ merchandiseId: variantId, quantity }],
+        cartId: cart.id, // FIX 11: Use 'cartId'
       },
     });
 
-    cart.storeCart(data.checkoutLineItemsAdd.checkout);
+    // FIX 12: Read from 'cartLinesAdd'
+    cart.storeCart(data.cartLinesAdd.cart);
     // alert("Product added to cart");
   } catch (error) {
     console.error("Error:", error);

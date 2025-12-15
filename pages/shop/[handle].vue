@@ -1,8 +1,8 @@
 <template>
-  <section>
+  <section v-if="product && product.productByHandle">
     <div class="product---page---img">
       <img
-        v-for="image in product.productByHandle.images.edges"
+        v-for="image in product.productByHandle.images?.edges"
         :key="image.node.src"
         :src="image.node.src"
         loading="lazy"
@@ -61,14 +61,13 @@
       </div>
     </div>
   </section>
+  <div v-else>Loading...</div>
 </template>
 
 <script setup>
-// FIX 1: Import 'createCartMutation' (new name) from the old file path
 import { createCartMutation } from "../../graphql/createCheckoutMutation";
 import { getProductQuery } from "../../graphql/getProduct";
-// Note: We kept the export name 'addLineItems' in the previous step, so this import remains correct
-import { addLineItems } from "../../graphql/addLinesToCheckout"; 
+import { addLineItems } from "../../graphql/addLinesToCheckout";
 
 const route = useRoute();
 const cart = useCart();
@@ -77,28 +76,35 @@ const { data: product } = await useAsyncQuery(getProductQuery, {
   handle: route.params.handle,
 });
 
-const variants = product.value.productByHandle.variants.edges;
-let displayVariants = null;
+// FIX 3: Make 'variants' a computed property so it updates reactively and safely
+// This prevents the script from crashing if product.value is null initially
+const variants = computed(() => {
+  return product.value?.productByHandle?.variants?.edges || [];
+});
 
-if (variants.length > 1) {
-  displayVariants = variants;
-}
+// FIX 4: calculate displayVariants based on the computed 'variants'
+const displayVariants = computed(() => {
+  if (variants.value.length > 1) {
+    return variants.value;
+  }
+  return null;
+});
 
 let selectedVariantIndex = 0;
 let quantity = 1;
 
 const updateQuantity = (e) => {
-  quantity = e.target.value;
-  quantity = parseInt(quantity);
+  quantity = parseInt(e.target.value);
 };
 
-const price = computed(
-  () => `$${product.value.productByHandle.priceRange.maxVariantPrice.amount}`
-);
+const price = computed(() => {
+  // Use optional chaining here too
+  const amount = product.value?.productByHandle?.priceRange?.maxVariantPrice?.amount;
+  return amount ? `$${amount}` : '';
+});
 
 const removeSelectedClass = () => {
   const variantsButton = document.querySelectorAll(".variant");
-
   variantsButton.forEach((button) => {
     button.classList.remove("selected");
   });
@@ -106,7 +112,6 @@ const removeSelectedClass = () => {
 
 const handleButtonClickedStyle = (e) => {
   removeSelectedClass();
-
   e.target.classList.add("selected");
 };
 
@@ -116,29 +121,28 @@ const redirectToPayment = async (e) => {
 
     if (cart.id === "") {
       const { data } = await apolloClient.client.mutate({
-        mutation: createCartMutation, // FIX 2: Use the new mutation variable
+        mutation: createCartMutation,
       });
-      // FIX 3: Read from 'cartCreate' instead of 'checkoutCreate'
       cart.storeId(data.cartCreate.cart.id);
     }
 
-    let variantId =
-      product.value.productByHandle.variants.edges[selectedVariantIndex].node
-        .id;
+    // FIX 5: Safely access the variant ID using the computed 'variants'
+    const variantId = variants.value[selectedVariantIndex]?.node?.id;
+
+    if (!variantId) {
+      console.error("No variant ID found");
+      return;
+    }
 
     const { data } = await apolloClient.client.mutate({
       mutation: addLineItems,
       variables: {
-        // FIX 4: Use 'lines' and 'merchandiseId' (Cart API format)
-        lines: [{ merchandiseId: variantId, quantity }], 
-        cartId: cart.id, // FIX 5: Use 'cartId'
+        lines: [{ merchandiseId: variantId, quantity }],
+        cartId: cart.id,
       },
     });
 
-    // FIX 6: Read from 'cartLinesAdd'
     cart.storeCart(data.cartLinesAdd.cart);
-
-    // FIX 7: Use 'checkoutUrl'
     window.location.href = data.cartLinesAdd.cart.checkoutUrl;
   } catch (error) {
     console.error("Error:", error);
@@ -150,28 +154,28 @@ const addToCart = async (e) => {
     const apolloClient = useApolloClient();
     if (cart.id === "") {
       const { data } = await apolloClient.client.mutate({
-        mutation: createCartMutation, // FIX 8: Use the new mutation variable
+        mutation: createCartMutation,
       });
-      // FIX 9: Read from 'cartCreate'
       cart.storeId(data.cartCreate.cart.id);
     }
 
-    let variantId =
-      product.value.productByHandle.variants.edges[selectedVariantIndex].node
-        .id;
+    // FIX 6: Safely access the variant ID
+    const variantId = variants.value[selectedVariantIndex]?.node?.id;
+
+    if (!variantId) {
+      console.error("No variant ID found");
+      return;
+    }
 
     const { data } = await apolloClient.client.mutate({
       mutation: addLineItems,
       variables: {
-        // FIX 10: Use 'lines' and 'merchandiseId'
         lines: [{ merchandiseId: variantId, quantity }],
-        cartId: cart.id, // FIX 11: Use 'cartId'
+        cartId: cart.id,
       },
     });
 
-    // FIX 12: Read from 'cartLinesAdd'
     cart.storeCart(data.cartLinesAdd.cart);
-    // alert("Product added to cart");
   } catch (error) {
     console.error("Error:", error);
   }
@@ -179,7 +183,7 @@ const addToCart = async (e) => {
 
 const descFunction = () => {
   const desc_box = document.querySelector(".desc---modal");
-  desc_box.classList.toggle("open");
+  if (desc_box) desc_box.classList.toggle("open");
 };
 
 const selectVariant = (index, e) => {

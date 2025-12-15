@@ -31,7 +31,7 @@
 
         <div class="checkout---btn---wrapper">
           <a
-            :href="store.checkoutUrl"
+            :href="store.cartUrl"
             class="checkout---text other---text checkout---btn"
           >
             Proceed to Checkout

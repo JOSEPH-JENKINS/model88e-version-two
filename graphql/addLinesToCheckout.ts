@@ -1,21 +1,22 @@
 export const addLineItems = gql`
-  mutation checkoutLineItemsAdd(
-    $checkoutId: ID!
-    $lineItems: [CheckoutLineItemInput!]!
+  mutation cartLinesAdd(
+    $cartId: ID!
+    $lines: [CartLineInput!]!
   ) {
-    checkoutLineItemsAdd(checkoutId: $checkoutId, lineItems: $lineItems) {
-      checkout {
+    cartLinesAdd(cartId: $cartId, lines: $lines) {
+      cart {
         id
-        webUrl
-        lineItems(first: 100) {
+        checkoutUrl
+        lines(first: 100) {
           edges {
             node {
               id
-              title
               quantity
-              variant {
-                id
-                title
+              merchandise {
+                ... on ProductVariant {
+                  id
+                  title
+                }
               }
             }
           }

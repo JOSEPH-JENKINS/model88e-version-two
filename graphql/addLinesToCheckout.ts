@@ -16,6 +16,10 @@ export const addLineItems = gql`
                 ... on ProductVariant {
                   id
                   title
+                  product {
+                    title
+                    handle
+                  }
                 }
               }
             }
